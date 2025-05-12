@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 import store from "./context/store/store";
+import SingleProduct from "./pages/SingleProduct";
 
 function App() {
   const theme = createTheme({
@@ -43,6 +44,7 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/shop/:title" element={<SingleProduct />} />
             </Routes>
           </Box>
 
