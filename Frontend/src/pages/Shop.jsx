@@ -12,24 +12,37 @@ import {
 import { Link } from "react-router-dom";
 
 function Shop() {
+  const store = useSelector((store) => store.data);
   const [products, setProducts] = useState(null);
   const [filter, setFilter] = useState({
     category: "all",
-    sort: "all",
+    sort: "Cheapest",
   });
-  const store = useSelector((store) => store.data);
 
   useEffect(() => {
-    if(filter.category === "all" && filter.sort === "all"){
-      return setProducts(store.products);
-    };
+    let filteredProducts = [...store.products];
 
-    const filteredProducts = store.products.filter((item)=>{
-      return item.categoryName === filter.category 
+    // Apply category filter
+    if (filter.category !== "all") {
+      filteredProducts = filteredProducts.filter(
+        (item) => item.categoryName === filter.category
+      );
+    }
 
-    })
+    // Apply sorting
+    filteredProducts.sort((a, b) => {
+      const priceA = a.salePrice || a.price;
+      const priceB = b.salePrice || b.price;
+      
+      if (filter.sort === "Cheapest") {
+        return priceA - priceB;
+      } else if (filter.sort === "Most Expensive") {
+        return priceB - priceA;
+      }
+      return 0;
+    });
+
     setProducts(filteredProducts);
-    console.log(filteredProducts);
   }, [store.products, filter]);
 
   return (
@@ -59,20 +72,26 @@ function Shop() {
             value={filter.category}
             onChange={(e) => setFilter({ ...filter, category: e.target.value })}
           >
-            <MenuItem value="all" defaultChecked>All</MenuItem>
-            <MenuItem value="men">Dresses</MenuItem>
-            <MenuItem value="women">Tops & Blouses</MenuItem>
-            <MenuItem value="kids">Tops & Blouses</MenuItem>
+            <MenuItem value="all" defaultChecked>
+              All
+            </MenuItem>
+            <MenuItem value="Dresses">Dresses</MenuItem>
+            <MenuItem value="Tops">Tops & Blouses</MenuItem>
+            <MenuItem value="Skirts">Skirts</MenuItem>
+            <MenuItem value="Jeans">Jeans & Pants</MenuItem>
           </Select>
         </Box>
         <Box sx={{ padding: 2, display: "flex", gap: 2, alignItems: "center" }}>
           <Typography>Sort by</Typography>
           <Select
             sx={{ width: "100px" }}
+            value={filter.sort}
             onChange={(e) => setFilter({ ...filter, sort: e.target.value })}
           >
-            <MenuItem value="all">Cheapest</MenuItem>
-            <MenuItem value="men">Most Expensive</MenuItem>
+            <MenuItem value="Cheapest" defaultChecked>
+              Cheapest
+            </MenuItem>
+            <MenuItem value="Most Expensive">Most Expensive</MenuItem>
           </Select>
         </Box>
       </Box>
