@@ -18,32 +18,27 @@ function Shop() {
     category: "all",
     sort: "Cheapest",
   });
+  useEffect(()=>{
+    let  filteredProducts = [...store.products];
+     if(filter.category !== "all"){
+      filteredProducts = filteredProducts.filter((item)=>item.categoryName === filter.category)
+     }
 
-  useEffect(() => {
-    let filteredProducts = [...store.products];
-
-    // Apply category filter
-    if (filter.category !== "all") {
-      filteredProducts = filteredProducts.filter(
-        (item) => item.categoryName === filter.category
-      );
-    }
-
-    // Apply sorting
-    filteredProducts.sort((a, b) => {
-      const priceA = a.salePrice || a.price;
-      const priceB = b.salePrice || b.price;
-      
-      if (filter.sort === "Cheapest") {
-        return priceA - priceB;
-      } else if (filter.sort === "Most Expensive") {
-        return priceB - priceA;
+     filteredProducts.sort((a,b)=>{
+      const PriceA = a.salePrice || a.price;
+      const PriceB = b.salePrice || b.price;
+      if(filter.sort === "Cheapest"){
+        return PriceA - PriceB;
+      }else if(filter.sort === "Most Expensive"){
+        return PriceB - PriceA;
       }
       return 0;
-    });
+     })
 
-    setProducts(filteredProducts);
-  }, [store.products, filter]);
+     setProducts(filteredProducts);
+
+  },[store.products, filter])
+
 
   return (
     <Box>

@@ -1,7 +1,13 @@
 import { Box, Button, Rating, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../context/actions/cartActions";
 
 function AddToCartCard({ product }) {
+  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.cart);
+  console.log("Store:", store);
   return (
     <Box
       sx={{
@@ -56,18 +62,19 @@ function AddToCartCard({ product }) {
       <Typography>{product.description}</Typography>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Button variant="contained" color="primary">
+          <Button onClick={() => setQuantity(quantity == 1 ? 1: quantity - 1)} variant="contained" color="primary">
             -
           </Button>
           <TextField
             type="number"
             sx={{ width: "70px", textAlign: "center" }}
             size="small"
-            inputProps={{ min: 1, max: 10 }}
-            defaultValue={1}
-            onChange={(value) => console.log(value)}
+            InputProps={{ inputProps: { min: 1, max: 10 } }}
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            readOnly
           />
-          <Button variant="contained" color="primary">
+          <Button onClick={() => setQuantity(quantity == 10 ? 10 : quantity + 1)} variant="contained" color="primary">
             +
           </Button>
         </Box>
@@ -75,6 +82,10 @@ function AddToCartCard({ product }) {
           variant="contained"
           color="primary"
           sx={{ width: "300px", fontSize: "1rem" }}
+          onClick={()=>{
+            dispatch(addToCart({...product, quantity}));
+          }}
+
         >
           Add to cart
         </Button>

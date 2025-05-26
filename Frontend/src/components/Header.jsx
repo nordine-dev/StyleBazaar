@@ -15,9 +15,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo_header.png";
+import { useSelector } from "react-redux";
 
 function Header() {
   const [openMoebileMenu, setOpenMobileMenu] = useState(false);
+  const store = useSelector((store)=> store.cart)
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -60,7 +62,7 @@ function Header() {
               <AccountCircleIcon />
             </Link>
             <Link to="/cart">
-              <Badge badgeContent={2} color="secondary">
+              <Badge badgeContent={store.cartItem.length} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </Link>
