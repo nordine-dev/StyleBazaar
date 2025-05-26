@@ -12,6 +12,7 @@ import { Box, createTheme, ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 import store from "./context/store/store";
 import SingleProduct from "./pages/SingleProduct";
+import Dahboard from "./pages/Dahboard";
 
 function App() {
   const theme = createTheme({
@@ -45,6 +46,7 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/login" element={<Login />} />
               <Route path="/shop/:title" element={<SingleProduct />} />
+              <Route path="/dashboard" element={<Dahboard/>}/>
             </Routes>
           </Box>
 
