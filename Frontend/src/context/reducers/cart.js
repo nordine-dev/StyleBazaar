@@ -14,6 +14,13 @@ const initialState = {
     country: "",
   },
 };
+// totaol price function
+const totalPrice = (cartItem)=>{
+  return cartItem.reduce((acc, item)=>{
+    const price = item.salePrice ? item.salePrice : item.price;
+    return acc + price * item.quantity;
+  }, 0);
+}
 
 const cartReducer = (state = initialState, action) => {
   let cartItem = state.cartItem;
@@ -31,15 +38,11 @@ const cartReducer = (state = initialState, action) => {
       } else {
         cartItem = [...cartItem, action.payload];
       }
-      const totalItemsCalulated = cartItem.reduce((acc, item) => {
-        const price = item.salePrice ? item.salePrice : item.price;
 
-        return acc + price * item.quantity;
-      }, 0);
       return {
         ...state,
         cartItem: cartItem,
-        totalPrice: totalItemsCalulated,
+        totalPrice: totalPrice(cartItem),
         totalItems: cartItem.length,
       };
     }
@@ -47,33 +50,27 @@ const cartReducer = (state = initialState, action) => {
       const updateCartItems = cartItem.filter((item) => {
         return item.id !== action.payload;
       });
-      const totalItemsCalulated = updateCartItems.reduce((acc, item)=> {
-        const price = item.salePrice ? item.salePrice : item.price;
-        return acc + price * item.quantity;
-      },0);
 
       return {
         ...state,
         cartItem: updateCartItems,
-        totalPrice : totalItemsCalulated,
+        totalPrice : totalPrice(updateCartItems),
         totalItems: updateCartItems.length,
       };
     }
     case "UPADED_CART_ITEM":{
+
         const {itemId, quantity} = action.payload;
+
         const updateCartItemss = cartItem.map((item)=>{
             return item.id === itemId ? {...item, quantity: quantity}: item;
 
         })
-        const totalItemsCalulated = updateCartItemss.reduce((acc, item)=>{
-            const price = item.salePrice ? item.salePrice : item.price;
-            return acc + price * item.quantity;
-        },0);
 
         return {
             ...state,
             cartItem: updateCartItemss,
-            totalPrice: totalItemsCalulated
+            totalPrice: totalPrice(updateCartItemss)
         }
     }
 

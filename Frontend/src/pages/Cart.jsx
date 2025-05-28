@@ -70,7 +70,7 @@ function Cart() {
                   {cartItems.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.price}$</TableCell>
+                      <TableCell>{item.salePrice ? item.salePrice : item.price}$</TableCell>
                       <TableCell>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                           <Button onClick={()=> dispatch(upadedCartItems(item.id, item.quantity + 1))}>
@@ -90,7 +90,7 @@ function Cart() {
                           </Button>
                         </Box>
                       </TableCell>
-                      <TableCell>{item.price * item.quantity}$</TableCell>
+                      <TableCell>{(item.salePrice ? item.salePrice : item.price) * item.quantity}$</TableCell>
                       <TableCell>
                         <Button
                           variant="oulined"
@@ -128,7 +128,7 @@ function Cart() {
               Total Items: {store.totalItems}
             </Typography>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
-              Total Price: {totalPrice}$
+              Total Price: {totalPrice.toFixed(2)}$
             </Typography>
             <Link to="/checkout">
               <Button

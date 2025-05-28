@@ -17,7 +17,10 @@ function Checkout() {
     email: "",
     address: "",
     city: "",
+    paymentMethod: "credit",
   });
+
+  console.log("Checkout Form Data:", formData);
   return (
     <Box>
       <Typography
@@ -31,14 +34,16 @@ function Checkout() {
       >
         Checkout
       </Typography>
-      <Box sx={{ 
-        border: "1px solid #ccc", 
-        padding: 2, 
-        borderRadius: 2, 
-        boxShadow: 2 , 
-        maxWidth: "500px",
-        margin: "0 auto",
-      }}>
+      <Box
+        sx={{
+          border: "1px solid #ccc",
+          padding: 2,
+          borderRadius: 2,
+          boxShadow: 2,
+          maxWidth: "500px",
+          margin: "0 auto",
+        }}
+      >
         <FormControl sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <FormLabel>Shipping Address</FormLabel>
           <TextField
@@ -74,7 +79,12 @@ function Checkout() {
             fullWidth
           />
           {/* Payment Method */}
-          <RadioGroup>
+          <RadioGroup
+            value={formData.paymentMethod}
+            onChange={(e) =>
+              setFormData({ ...formData, paymentMethod: e.target.value })
+            }
+          >
             <FormLabel>Payment Method</FormLabel>
             <FormControlLabel
               value="credit"
@@ -88,7 +98,11 @@ function Checkout() {
             />
           </RadioGroup>
         </FormControl>
-        <Button  variant="contained" color="primary" sx={{ width: "100%", marginTop: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ width: "100%", marginTop: 2 }}
+        >
           Checkout
         </Button>
       </Box>
