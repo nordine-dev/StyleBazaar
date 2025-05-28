@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
+import { transporter } from "../config/transport.js";
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -89,7 +90,6 @@ export const login = async (req, res) => {
       success: true,
       message: "Login successfully",
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -97,3 +97,149 @@ export const login = async (req, res) => {
     });
   }
 };
+
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({
+      success: true,
+      message: "Logout successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal server error",
+    });
+  }
+};
+
+// send reset password
+export const sendResetPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide all required fields",
+    });
+  }
+
+  try {
+    // check if user exists
+    const userExists = await User.findOne({ email });
+    if (!userExists) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // send email verfication code
+    const code = Math.floor(100000 + Math.random() * 900000); // generate 6 digit code
+    userExists.vereficationCode = code;
+    userExists.vereficationCodeExpireAt = Date.now() + 10 * 60 * 1000; // code valid for 10 minutes
+    await userExists.save();
+
+    // sen email with code
+    const options = {
+      from: process.env.STMP_EMAIL,
+      to: email,
+      subject: "Reset Password Verification Code",
+      text: `Your verification code is ${code}. It is valid for 10 minutes.`,
+    };
+    await transporter.sendMail(options);
+    return res.status(200).json({
+      success: true,
+      message: "Verification code sent to your email",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal server error",
+    });
+  }
+};
+
+// verify reset passord code
+export const verifyResetPasswordCode = async (req, res) => {
+  const { email, code } = req.body;
+  if (!email || !code) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide all required fields",
+    });
+  }
+  try {
+    // check if user exists
+    const userExists = await User.findOnde({ email });
+    if (!userExists) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    // check if code is valid
+    if (
+      userExists.vereficationCode !== code ||
+      userExists.vereficationCodeExpireAt < Date.now()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired verification code",
+      });
+    }
+    // code is valid
+    return res.status(200).json({
+      success: true,
+      message: "Verification code is valid",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal server error",
+    });
+  }
+};
+
+// change password
+export const changePassword = async (req, res)=>{
+    const {email, code, newPassword} = req.body;
+    if(!email || !code || !newPassword){
+        return res.status(400).json({
+            success: false,
+            message : "Please provide all required fields"
+        })
+    }
+    try {
+        //check uf user exists
+        const userExists = await User.findOnd({email});
+        if(!userExists){
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+        // check if code is valid
+        if(userExists.vereficationCode !== code || userExists.vereficationCodeExpireAt < Date.now()){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid or expired verification code"
+            })
+        }
+        //update password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        userExists.password = hashedPassword;
+        userExists.vereficationCode = null; // clear the verification code
+        userExists.vereficationCodeExpireAt = null; // clear the verification code expiration
+        await userExists.save();
+        return res.status(200).json({
+            success: true,
+            message: "Password changed successfully"
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            success :false,
+            message: error.message || "Internal  server error"
+        })
+    }
+}

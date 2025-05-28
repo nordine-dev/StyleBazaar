@@ -49,6 +49,14 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  vereficationCode:{
+    type: String,
+    default: null
+  },
+  vereficationCodeExpireAt: {
+    type: Date,
+    default : null
+  }
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
