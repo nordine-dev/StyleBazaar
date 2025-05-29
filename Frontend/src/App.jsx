@@ -13,8 +13,14 @@ import { Provider } from "react-redux";
 import store from "./context/store/store";
 import SingleProduct from "./pages/SingleProduct";
 import Dahboard from "./pages/Dahboard";
+import { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 function App() {
+
+  axios.defaults.baseURL = "http://localhost:5000/";
+  axios.defaults.withCredentials = true;
+
   const theme = createTheme({
     typography: {
       fontFamily: "Montserrat",
@@ -33,6 +39,7 @@ function App() {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <Header />
+      <Toaster position="top-right" reverseOrder={false} />
           <Box
             component="main"
             sx={{ maxWidth: "1600px", minHeight: "100vh", margin: "0 auto" }}
@@ -46,7 +53,7 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/login" element={<Login />} />
               <Route path="/shop/:title" element={<SingleProduct />} />
-              <Route path="/dashboard" element={<Dahboard/>}/>
+              <Route path="/dashboard" element={<Dahboard />} />
             </Routes>
           </Box>
 

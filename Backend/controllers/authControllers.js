@@ -21,6 +21,29 @@ export const register = async (req, res) => {
       });
     }
 
+    //check if username already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists",
+      });
+    }
+    // check if email is valid
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if( !emailRegex.test(email)){
+      return res.status(400).json({
+        success: false,
+        message : "Please provide a valid email address"
+      })
+    }
+    // check if password is starong enough
+    if( password.length < 8){
+      return res.status(400).json({
+        success: false,
+        message : "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
+      })
+    }
     // create new user
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -29,6 +52,7 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
     });
+
     await newUser.save();
 
     return res.status(201).json({
@@ -201,45 +225,47 @@ export const verifyResetPasswordCode = async (req, res) => {
 };
 
 // change password
-export const changePassword = async (req, res)=>{
-    const {email, code, newPassword} = req.body;
-    if(!email || !code || !newPassword){
-        return res.status(400).json({
-            success: false,
-            message : "Please provide all required fields"
-        })
+export const changePassword = async (req, res) => {
+  const { email, code, newPassword } = req.body;
+  if (!email || !code || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide all required fields",
+    });
+  }
+  try {
+    //check uf user exists
+    const userExists = await User.findOnd({ email });
+    if (!userExists) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-    try {
-        //check uf user exists
-        const userExists = await User.findOnd({email});
-        if(!userExists){
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            })
-        }
-        // check if code is valid
-        if(userExists.vereficationCode !== code || userExists.vereficationCodeExpireAt < Date.now()){
-            return res.status(400).json({
-                success: false,
-                message: "Invalid or expired verification code"
-            })
-        }
-        //update password
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        userExists.password = hashedPassword;
-        userExists.vereficationCode = null; // clear the verification code
-        userExists.vereficationCodeExpireAt = null; // clear the verification code expiration
-        await userExists.save();
-        return res.status(200).json({
-            success: true,
-            message: "Password changed successfully"
-        })
-        
-    } catch (error) {
-        return res.status(500).json({
-            success :false,
-            message: error.message || "Internal  server error"
-        })
+    // check if code is valid
+    if (
+      userExists.vereficationCode !== code ||
+      userExists.vereficationCodeExpireAt < Date.now()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired verification code",
+      });
     }
-}
+    //update password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    userExists.password = hashedPassword;
+    userExists.vereficationCode = null; // clear the verification code
+    userExists.vereficationCodeExpireAt = null; // clear the verification code expiration
+    await userExists.save();
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal  server error",
+    });
+  }
+};
