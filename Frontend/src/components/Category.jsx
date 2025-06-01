@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
+const backendUri = import.meta.env.VITE_BACKEND_URI;
+
 function Category({ img, title, link }) {
   return (
     <Box>
@@ -28,7 +30,7 @@ function Category({ img, title, link }) {
           ></Box>
           <Box
             component={"img"}
-            src={img}
+            src={`${backendUri}/${img}`}
             alt={title}
             width={200}
             height={200}

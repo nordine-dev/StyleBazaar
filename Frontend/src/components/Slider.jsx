@@ -75,30 +75,39 @@ function Slider({
         justifyContent: "space-between",
         alignItems: "center",
         padding: 5,
-        height: "600px",
+        height: { xs: "300px", sm: "600px" },
+        width: "100%",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       <Box
         sx={{
-          width: "50%",
+          width: { xs: "100%", sm: "50%" },
+          height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-around",
+          justifyContent: "center",
           alignItems: "start",
           gap: 2,
+          position: { xs:"absolute", sm: "relative"},
+          left: "5%",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 1,
         }}
       >
         <Typography
           ref={titleRef}
           variant="h2"
-          sx={{ fontWeight: "bold", fontSize: "4vw" }}
+          sx={{ fontWeight: "bold", fontSize: { xs: "20px", sm: "50px" } }}
         >
           {title}
         </Typography>
         <Typography
           ref={descriptionRef}
           variant="body1"
-          sx={{ fontSize: "1.5vw" }}
+          sx={{ fontSize: { sx: "16px", sm: "25px"} }}
         >
           {description}
         </Typography>
@@ -107,19 +116,19 @@ function Slider({
           variant="contained"
           color="primary"
           href={BtnLink}
-          sx={{ fontSize: "1vw" }}
+          sx={{ fontSize: { xs: "16px", sm: "20px" }}}
         >
           {btnText}
         </Button>
       </Box>
-      <Box sx={{ height: "600px", overflow: "hidden" }}>
+      <Box sx={{overflow: "hidden" ,  height: "100%", width:{ xs: "300px", sm: "600px"}, position: { xs: "absolute", sm: "relative" }, right: 0, top: 0, zIndex: 0 }}>
         <img
           ref={imageRef}
           src={image}
           alt={title}
-          width="600px"
-          height="600px"
-          style={{ objectFit: "cover" }}
+          maxWidth="100%"
+          height={"auto"}
+          sx={{ objectFit: "cover", width:{ sx: "200px", sm: "600px" } }}
         />
       </Box>
     </Box>

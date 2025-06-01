@@ -23,7 +23,6 @@ function Header() {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log(isMobile);
   const navItems = [
     { text: "Home", link: "/" },
     { text: "Shop", link: "/shop" },

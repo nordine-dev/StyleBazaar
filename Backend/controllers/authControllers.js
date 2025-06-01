@@ -31,18 +31,19 @@ export const register = async (req, res) => {
     }
     // check if email is valid
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if( !emailRegex.test(email)){
+    if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message : "Please provide a valid email address"
-      })
+        message: "Please provide a valid email address",
+      });
     }
     // check if password is starong enough
-    if( password.length < 8){
+    if (password.length < 8) {
       return res.status(400).json({
         success: false,
-        message : "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
-      })
+        message:
+          "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number",
+      });
     }
     // create new user
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -268,4 +269,32 @@ export const changePassword = async (req, res) => {
       message: error.message || "Internal  server error",
     });
   }
+};
+
+// get user profile
+export const getUserProfile = async (req, res) => {
+  const { userId } = req;
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: "User ID is required",
+    });
+  }
+
+  const user = await User.findById(userId);
+  if(!user){
+    return res.status(404).json({
+      success: false,
+      message: "User not found"
+    })
+  }
+  return res.status(200).json({
+    success:true,
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    }
+  })
 };

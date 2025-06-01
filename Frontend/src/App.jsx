@@ -10,15 +10,17 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
-import store from "./context/store/store";
 import SingleProduct from "./pages/SingleProduct";
 import Dahboard from "./pages/Dahboard";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
+import RequireAuth from "./components/RequireAuth";
+import store from "./context/store/store";
+import IsAuth from "./components/PublicRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
-
-  axios.defaults.baseURL = "http://localhost:5000/";
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URI;
   axios.defaults.withCredentials = true;
 
   const theme = createTheme({
@@ -39,7 +41,7 @@ function App() {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <Header />
-      <Toaster position="top-right" reverseOrder={false} />
+          <Toaster position="top-right" reverseOrder={false} />
           <Box
             component="main"
             sx={{ maxWidth: "1600px", minHeight: "100vh", margin: "0 auto" }}
@@ -51,9 +53,13 @@ function App() {
               <Route path="/shop" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/login" element={<Login />} />
               <Route path="/shop/:title" element={<SingleProduct />} />
-              <Route path="/dashboard" element={<Dahboard />} />
+              <Route element={<PublicRoute />}>
+                <Route path="/login" element={<Login />} />
+              </Route>
+              <Route element={<RequireAuth />}>
+                <Route path="/dashboard" element={<Dahboard />} />
+              </Route>
             </Routes>
           </Box>
 

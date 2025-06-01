@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import AddToCartCard from "./AddToCartCard";
 
+const backendUri = import.meta.env.VITE_BACKEND_URI;
+
 function Product() {
   const { title } = useParams();
   const [product, setProduct] = useState(null);
@@ -58,7 +60,7 @@ function Product() {
             }}
           >
             <img
-              src={product.image}
+              src={`${backendUri}/${product.image}`}
               alt={product.name}
               width={700}
               height={700}

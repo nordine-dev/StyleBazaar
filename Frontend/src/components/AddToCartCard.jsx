@@ -1,13 +1,11 @@
 import { Box, Button, Rating, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addToCart } from "../context/actions/cartActions";
 
 function AddToCartCard({ product }) {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
-  const store = useSelector((store) => store.cart);
-  console.log("Store:", store);
   return (
     <Box
       sx={{
@@ -60,7 +58,7 @@ function AddToCartCard({ product }) {
         )}
       </Box>
       <Typography>{product.description}</Typography>
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: 'wrap' }}>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <Button onClick={() => setQuantity(quantity == 1 ? 1: quantity - 1)} variant="contained" color="primary">
             -

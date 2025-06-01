@@ -97,7 +97,10 @@ function Shop() {
           display: "flex",
           flexWrap: "wrap",
           gap: 2,
-          justifyContent: "start",
+          justifyContent: { xs: "center", sm: "flex-start" },
+          alignItems: "center",
+          marginTop: "20px",
+          marginBottom: "20px",
           padding: 2,
         }}
       >

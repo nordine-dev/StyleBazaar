@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading, stopLoading } from "../context/actions/uiActions";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const store = useSelector((store) => store.ui);
@@ -25,6 +26,7 @@ function Login() {
     username: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     dispatch(setLoading());
@@ -54,6 +56,7 @@ function Login() {
             password: "",
             username: "",
           })
+          navigate("/dashboard");
         }
       }
     } catch (error) {

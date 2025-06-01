@@ -2,6 +2,8 @@ import { Box, Rating, Typography } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 
+const backendUri = import.meta.env.VITE_BACKEND_URI;
+
 function ProductCard({ title, image, price, salePrice, rating }) {
   return (
     <Link to={`/shop/${title}`}>
@@ -22,7 +24,7 @@ function ProductCard({ title, image, price, salePrice, rating }) {
         <Box sx={{ overflow: "hidden", width: "300px", height: "300px" }}>
           <Box
             component={"img"}
-            src={image}
+            src={`${backendUri}/${image}`}
             alt={title}
             sx={{
               objectFit: "cover",

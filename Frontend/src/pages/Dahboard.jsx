@@ -1,11 +1,13 @@
 import { Box, Typography } from '@mui/material'
-import React from 'react'
 import { useState } from 'react'
 import Orders from '../components/Orders';
 import AddProducts from '../components/AddProducts';
+import Settings from '../components/Settings';
+
 
 function Dahboard() {
   const [view, setView] = useState("orders");
+
   return (
     <Box>
         <Typography variant="h2" sx={{ textAlign: "center", fontWeight: "bold", marginBottom: 4, marginTop: 4 }}>
@@ -37,7 +39,7 @@ function Dahboard() {
         <Box>
             {view === "orders" && <Orders/>}
             {view === "add_product" && <AddProducts/>}
-            {view === "settings" && <Typography variant="h4" sx={{ textAlign: "center" }}>Settings Section</Typography>}
+            {view === "settings" && <Settings/>}
         </Box>
     </Box>
   )
