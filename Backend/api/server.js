@@ -33,4 +33,4 @@ app.use("/api/data", dataRoutes);
 //   console.log("server is runing on port", process.env.PORT || 3000);
 // });
 
-export const handler = ServerlessHttp(app);
+export default ServerlessHttp(app);
